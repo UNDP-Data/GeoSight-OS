@@ -120,15 +120,43 @@ class IndicatorBasicListSerializer(serializers.ModelSerializer):
     """Serializer for basic Indicator."""
 
     category = serializers.SerializerMethodField()
+    parameters = serializers.SerializerMethodField()
+    created_by = serializers.SerializerMethodField()
+    permission = serializers.SerializerMethodField()
 
     def get_category(self, obj: Indicator):
         """Return group."""
         return obj.group.name if obj.group else ''
 
+    def get_parameters(self, obj: Indicator):
+        """Return parameters."""
+        urls = obj.url.split('?')
+        parameters = {}
+
+        for parameter in obj.indicatorparameter_set.all():
+            value = parameter.value
+            try:
+                value = float(value)
+            except ValueError:
+                pass
+            parameters[parameter.name] = value
+        return parameters
+
+    def get_created_by(self, obj: Indicator):
+        """Return created by."""
+        return obj.creator.username if obj.creator else ''
+
+    def get_permission(self, obj: Indicator):
+        """Return permission."""
+        return obj.permission.all_permission(
+            self.context.get('user', None)
+        )
+
     class Meta:  # noqa: D106
         model = Indicator
+        exclude = ('group',)
         fields = (
-            'id', 'name', 'shortcode', 'description', 'category')
+            'id', 'name', 'shortcode', 'description', 'type')
 
 
 class IndicatorRuleSerializer(serializers.ModelSerializer):

@@ -39,6 +39,7 @@ class ApiTag:
 
     BASEMAPS = 'Basemaps'
     DATA_BROWSER = 'Data Browser'
+    INDICATOR = 'Indicators'
 
 
 class ApiParams:
@@ -55,6 +56,20 @@ class ApiParams:
         'description__contains',
         openapi.IN_QUERY,
         description='Filter data by partial description.',
+        type=openapi.TYPE_STRING
+    )
+
+    SHORTCODE_CONTAINS = openapi.Parameter(
+        'shortcode__contains',
+        openapi.IN_QUERY,
+        description='Filter data by shortcode.',
+        type=openapi.TYPE_STRING
+    )
+
+    CREATED_BY_CONTAINS = openapi.Parameter(
+        'created__by__contains',
+        openapi.IN_QUERY,
+        description='Filter data by created date.',
         type=openapi.TYPE_STRING
     )
 
